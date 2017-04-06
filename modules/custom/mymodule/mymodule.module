@@ -1,0 +1,33 @@
+<?php
+
+ function mymodule_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state,$form_id) {
+
+if ($form_id == 'system_site_information_settings') {
+   // echo '<pre>'; print_r($form); echo '</pre>'; exit();
+
+   // Creating the field
+   $form['site_information']['siteapikey'] = array(
+     '#title' => t('API Key Value'),
+     '#description' => t('Site API Key'),
+     '#type' => 'textfield',
+     '#default_value' => !empty(\Drupal::config('node.settings')->get('siteapikey') ) ? \Drupal::config('node.settings')->get('siteapikey')  : 'NO API Key yet',
+     );
+
+   //Changing the value of the button
+   if('#value' != 'NO API Key yet') {
+   $form['actions']['submit']['#value']=t('Update Configuration');
+   }
+
+   	//Calling the function to save the value
+    $form['#submit'][] = 'mymodule_handler';
+}
+}
+ function mymodule_handler($form, &$form_state) {
+
+  //Saving the value
+  \Drupal::configFactory()->getEditable('node.settings')->set('siteapikey',$form['site_information']['siteapikey']['#value'])->save();
+  //Sending drupal message
+  drupal_set_message('The Site API Key has been saved with the value ' );
+  drupal_set_message($form['site_information']['siteapikey']['#value']);
+
+ }

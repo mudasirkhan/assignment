@@ -1,0 +1,4 @@
+name: my form module
+type: module
+core: '8.x'
+description: form updater
